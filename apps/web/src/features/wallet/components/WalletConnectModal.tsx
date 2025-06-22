@@ -5,7 +5,7 @@ import { useWalletConnect } from '../hooks/useWalletConnect'
 
 export default function WalletConnectModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
-  const { connectors, handleConnect, isConnected, connectingId } = useWalletConnect()
+  const { connectors, handleConnect, isConnected } = useWalletConnect()
 
   // connectors.forEach((c) => {console.log(`Connector: ${c.name}, ID: ${c.id}, Ready: ${c.ready}`)})
 

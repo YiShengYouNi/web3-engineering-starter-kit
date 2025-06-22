@@ -1,9 +1,9 @@
 
-import { getContract, type WalletClient, type PublicClient } from 'viem'
+import { getContract, type WalletClient, type PublicClient, type GetContractReturnType } from 'viem'
 import { hengAbi } from '@abi/heng'
 import { getContractAddressByChainId } from '@chains'
 
-export function getHengContract(chainId: number,client: PublicClient | WalletClient){
+export function getHengContract(chainId: number, client: PublicClient | WalletClient): GetContractReturnType<typeof hengAbi, PublicClient | WalletClient> {
   return getContract({
     abi: hengAbi,
     address: getContractAddressByChainId(chainId),

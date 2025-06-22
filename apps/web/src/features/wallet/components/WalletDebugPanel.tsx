@@ -4,11 +4,11 @@
 import { useWalletClient } from 'wagmi'
 import { useState } from 'react'
 import WalletConnectModal from './WalletConnectModal'
-import { useWalletStatus } from '../hooks/useWalletStatus'
+import { useWalletSnapshot } from '../hooks/useWalletSnapshot'
 import {useIsClient } from '../hooks/useIsClient'
 
 export default function WalletDebugPanel() {
-  const { address, chainId, ensName, isConnected } = useWalletStatus()
+  const { address, chainId, ensName, isConnected } = useWalletSnapshot()
   const { data: walletClient } = useWalletClient()
   const [open, setOpen] = useState(false);
 
