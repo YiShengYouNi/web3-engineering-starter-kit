@@ -1,9 +1,9 @@
 
 import { getContract, type WalletClient, type PublicClient } from 'viem'
 import { hengAbi } from '@abi/heng'
-import { getContractAddressByChainId } from '@chains' // ✅ 来自 chains.ts 工具函数
+import { getContractAddressByChainId } from '@chains'
 
-export function getHengContract(chainId: number,client: PublicClient | WalletClient): ReturnType<typeof getContract> {
+export function getHengContract(chainId: number,client: PublicClient | WalletClient){
   return getContract({
     abi: hengAbi,
     address: getContractAddressByChainId(chainId),
