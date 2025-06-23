@@ -1,7 +1,7 @@
 // features/wallet/hooks/useWalletConnect.ts
 
-import { useConnect, useDisconnect, useAccount, useChainId, useEnsName } from 'wagmi'
-import { useEffect, useState } from 'react'
+import { useConnect, useDisconnect, useAccount, useChains, useChainId, useEnsName } from 'wagmi'
+import { useEffect } from 'react'
 import { walletStore } from '../store/walletStore'
 
 export function useWalletConnect() {
@@ -9,6 +9,10 @@ export function useWalletConnect() {
   const { disconnect } = useDisconnect()
   const { address, isConnected, connector } = useAccount()
   const chainId = useChainId()
+  const chains = useChains() 
+  const chain = chains.find((c) => c.id === chainId) || { id: chainId, name: 'Unknown' }
+
+  // console.log('useWalletConnect', 'connected chain:', chain.name );
  const { data: ens } = useEnsName({ address })
   const {
     setAddress,
@@ -16,6 +20,7 @@ export function useWalletConnect() {
     setChainId: setChain,
     setLastConnectorId,
     setEnsName,
+    setChainName,
     lastConnectorId,
     reset,
   } = walletStore()
@@ -35,6 +40,7 @@ export function useWalletConnect() {
       setAddress(address)
       setConnector(connector)
       setChain(chainId)
+      setChainName(chain.name)
       setEnsName(ens?? null)
     } else {
       reset()

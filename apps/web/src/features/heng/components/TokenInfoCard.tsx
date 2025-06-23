@@ -1,88 +1,87 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useWalletClient, usePublicClient } from 'wagmi'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { useHengContract } from '../hooks/useHengContract'
-import { useHengRole } from '../hooks/useHengRole'
-import { formatUnits } from 'viem'
-import { MintButton } from './MintButton'
-import {AddToWalletButton} from './AddToWalletButton'
-import { SetLogoButton } from './SetLogoButton'
+import { getExplorerUrl } from '@chains';
+import { walletStore } from '@/features/wallet/store/walletStore'
+import { useTotalSupply } from '../hooks/useTotalSupply'
+import { useIsMinter } from '../hooks/useIsMinter'
+import { useTokenMeta } from '../hooks/useTokenMeta'
+import MintButton from './MintButton'
+import AddToWalletButton from './AddToWalletButton'
+// import { SetLogoButton } from './SetLogoButton'
 
-interface Props {
+
+
+
+export function TokenInfoCard({ address }: {
   address: `0x${string}`
-}
+}) {
+  const publicClient= usePublicClient()
+  const { data: walletClient } = useWalletClient()
+  const chainId = walletStore((s) => s.chainId)
 
-export function TokenInfoCard({address}:Props) {
+  const { data: totalSupply, isLoading: loadingSupply } = useTotalSupply(publicClient!)
 
-  const { readContract } = useHengContract()
-  const { isMinter } = useHengRole(address)
+  const { data: isMinter, isLoading: loadingMinter } = useIsMinter(publicClient!)
 
-  const [balance, setBalance] = useState<string>('0')
-  const [symbol, setSymbol] = useState<string>('HENG')
-  const [name, setName] = useState<string>('Heng Token')
-  const [decimals, setDecimals] = useState<number>(18)
-  const [logoURI, setLogoURI] = useState<string | null>(null)
+  const { data: meta, isLoading: loadingMeta } = useTokenMeta(publicClient!)
+
+  const explorerLink = chainId && address ? getExplorerUrl(chainId, address) : ''
 
   // console.log('🚀 TokenInfoCard:', 'isMinter:', isMinter)
-
-  useEffect(() => {
-    if (!address || !readContract) return
-
-    async function fetchData(contract: NonNullable<typeof readContract>) {
-      try {
-        const [rawBalance, tokenSymbol, tokenName, tokenDecimals, uri] = await Promise.all([
-          contract.read.balanceOf([address]),
-          contract.read.symbol(),
-          contract.read.name(),
-          contract.read.decimals(),
-          contract.read.logoURI(),
-        ])
-        console.log('🚀 Token 合约信息:', 'logo:', uri);
-        setBalance(formatUnits(rawBalance, tokenDecimals))
-        setSymbol(tokenSymbol)
-        setName(tokenName)
-        setDecimals(tokenDecimals)
-        setLogoURI(uri)
-      } catch (err) {
-        console.warn('🚨 Token 合约信息获取失败:', err)
-      }
-    }
-
-    fetchData(readContract)
-  }, [address, readContract])
 
   return (
     <Card className="max-w-md w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-3">
-          {logoURI && (
-            <img
-              src={logoURI}
-              alt="token logo"
-              className="w-8 h-8 rounded-full object-cover border"
-              width={64}
-              height={64}
-            />
+          <h2 className="font-semibold text-lg">🪙 Token 信息</h2>
+
+          {loadingMeta ? (
+            <div>加载元信息...</div>
+          ) : (
+            <>
+              <div>名称：{meta?.name}</div>
+              <div>符号：{meta?.symbol}</div>
+              <div>总供应量：{loadingSupply ? '加载中...' : totalSupply?.toString()}</div>
+              {meta?.logoURI && (
+                <div className="flex items-center space-x-2">
+                  <span>Logo：</span>
+                  <img src={meta.logoURI} alt="Token Logo" className="w-6 h-6 rounded" />
+                </div>
+              )}
+            </>
           )}
-          {name} ({symbol})
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="text-sm text-muted-foreground">
-          当前地址余额：<span className="text-black">{balance} {symbol}</span>
+          合约地址：<span className="text-black">{address}</span>
+          {explorerLink && (
+            <a
+              href={explorerLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline text-sm"
+            >
+              查看
+            </a>
+          )}
         </div>
-       
-        <MintButton isMinter={isMinter} />
+        <div>
+          Mint 权限：
+          {loadingMinter ? '检测中...' : isMinter ? '✅ 你可以 Mint' : '❌ 无权限'}
+        </div>
+
+        {isMinter && walletClient && <MintButton walletClient={walletClient} />}
 
         <AddToWalletButton
-          address={address}
-          name={name}
-          symbol={symbol}
-          decimals={decimals}
-          image={logoURI}
+          name={meta?.name}
+          symbol={meta?.symbol || ''}
+          decimals={meta?.decimals}
+          image={meta?.logoURI}
         />
-        <SetLogoButton />
+        {/* <SetLogoButton /> */}
       </CardContent>
     </Card>
   )

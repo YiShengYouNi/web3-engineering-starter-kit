@@ -12,10 +12,11 @@ export interface ChainConfig {
     url: string
   }
   contracts: {
-    heng: Address
-    //TODO: 可扩展更多合约地址
+    [key: string]: Address // 合约地址映射，key为合约名称, 如 heng: '0x1234434534553453534'
   }
 }
+
+export const ZERO_ADDRESS: Address = '0x0000000000000000000000000000000000000000';
 
 export const CHAINS: Record<string, ChainConfig> = {
   mainnet: {
@@ -71,12 +72,23 @@ export const CHAINS: Record<string, ChainConfig> = {
       heng: '0x0000000000000000000000000000000000000000', //TODO: 📝替换为实际地址
     },
   },
+  arbitrum: {
+    id: 42161,
+    name: 'Arbitrum One',
+    nativeCurrency: 'ETH',
+    rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+    blockExplorers: {
+      name: 'Arbiscan',
+      url: 'https://arbiscan.io',
+    },
+    contracts: {
+      heng: '0x0000000000000000000000000000000000000000', //TODO: 📝替换为实际地址
+    }
+  }
 }
-
-
 // 根据网络ID获取网络信息
 export function getChainById(chainId: number): ChainConfig | undefined {
-  return Object.values(CHAINS).find((c) => c.id === chainId)
+  return Object.values(CHAINS).find((c) => c.id === chainId) || undefined
 }
 
 // 获取指定地址或交易的区块浏览器链接
@@ -88,8 +100,7 @@ export function getExplorerUrl(chainId: number, txOrAddress: string): string {
 }
 
 // 获取某个合约地址（如：heng token 合约）
-export function getContractAddressByChainId(chainId: number): Address {
-  const chain = getChainById(chainId)
-  if (!chain) throw new Error(`Unsupported chainId: ${chainId}`)
-  return chain.contracts.heng
+export function getAddressByChainIdAndTokenName(chainId: number, tokenName: string): Address {
+  const { contracts } = Object.values(CHAINS).find((c) => c.id === chainId) ?? {}
+  return contracts ? contracts[tokenName] ?? null : ZERO_ADDRESS;
 }

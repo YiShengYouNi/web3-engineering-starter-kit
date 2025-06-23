@@ -21,7 +21,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@abi/*": ["../../packages/config/abi/*"],
-      "@contract/*": ["../../packages/config/contract/*"]
+      "@contract/*": ["../../packages/config/contract/*"],
+      "@chains": ["../../packages/config/chains.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

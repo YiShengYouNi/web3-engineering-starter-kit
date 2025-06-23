@@ -1,51 +1,43 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { toast } from "sonner"
+import { walletStore } from '@/features/wallet/store/walletStore'
+import { getHengAddress } from '@contract/heng'
+import { addTokenToWallet } from '../utils'
 
-interface Props {
-  address: `0x${string}`
-  symbol: string
-  name: string
-  decimals?: number
-  image?: string | null
-}
-
-export function AddToWalletButton({
-  address,
-  symbol,
-  name,
+export default function AddToWalletButton({
+  symbol = '',
   decimals = 18,
   image,
-}: Props) {
- 
+  name,
+}: {
+  symbol: string
+  decimals?: number
+  image?: string
+  name?: string
+}) {
+
+  const address = walletStore((s) => s.address)
+  const chainId = walletStore((s) => s.chainId)
+
+  if (!chainId || !address) return null
+
+  const contractAddress = getHengAddress(chainId)
 
   const handleClick = async () => {
     try {
-      if (typeof window.ethereum === 'undefined') {
-        alert('请先安装 MetaMask 钱包')
-        return
-      }
-
-      const wasAdded = await window.ethereum.request({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: {
-            address,
-            symbol,
-            decimals,
-            image,
-          },
-        },
+      await addTokenToWallet({
+        address: contractAddress,
+        symbol,
+        decimals,
+        image,
+        name,
       })
 
-      if (wasAdded) {
-        console.log(`✅ ${symbol} 添加成功`)
-      } else {
-        console.log(`⛔ 用户取消了添加 ${symbol}`)
-      }
-    } catch (error) {
-      console.error('添加失败:', error)
+      toast.success(`已请求添加 ${symbol} 到钱包`)
+    } catch (err: any) {
+      toast.error(err.message ?? '添加失败')
     }
   }
 
