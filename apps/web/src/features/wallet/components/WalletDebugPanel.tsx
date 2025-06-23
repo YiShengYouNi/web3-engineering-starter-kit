@@ -9,7 +9,10 @@ import { useWalletSnapshot } from '../hooks/useWalletSnapshot'
 import {useIsClient } from '../hooks/useIsClient'
 
 export default function WalletDebugPanel() {
-  const { addressShort, chainId, ensName, isConnected, chainName } = useWalletSnapshot()
+  const {  addressShort, chainId, ensName, chainName, isConnected } = useWalletSnapshot()
+
+  // const chainName = walletStore((s) => s.chainName) || '未知网络'
+  // const addressShort = walletStore((s) => s.address) || '未连接';
 
   const { data: walletClient } = useWalletClient()
   const [open, setOpen] = useState(false);

@@ -1,5 +1,5 @@
 
-import { Providers } from '@/app/providers'
+import { Providers } from '@/providers/index'
 import { Toaster } from 'sonner'
 import '@/styles/globals.css';
 import '@/lib/polyfills'

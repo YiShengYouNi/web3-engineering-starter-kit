@@ -2,24 +2,24 @@
 
 import { useWalletClient, usePublicClient } from 'wagmi'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { getExplorerUrl } from '@chains';
+import { getAddressByChainIdAndTokenName, getExplorerUrl } from '@chains';
 import { walletStore } from '@/features/wallet/store/walletStore'
 import { useTotalSupply } from '../hooks/useTotalSupply'
 import { useIsMinter } from '../hooks/useIsMinter'
 import { useTokenMeta } from '../hooks/useTokenMeta'
 import MintButton from './MintButton'
 import AddToWalletButton from './AddToWalletButton'
+import { getAddress } from 'viem';
 // import { SetLogoButton } from './SetLogoButton'
 
 
 
 
-export function TokenInfoCard({ address }: {
-  address: `0x${string}`
-}) {
+export function TokenInfoCard() {
   const publicClient= usePublicClient()
   const { data: walletClient } = useWalletClient()
-  const chainId = walletStore((s) => s.chainId)
+  const chainId = walletStore((s) => s.chainId)?? 0;
+  const address= getAddressByChainIdAndTokenName(chainId, 'heng')
 
   const { data: totalSupply, isLoading: loadingSupply } = useTotalSupply(publicClient!)
 
