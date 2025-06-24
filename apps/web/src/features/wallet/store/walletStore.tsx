@@ -1,28 +1,28 @@
 // features/wallet/store/walletStore.ts
-import { create } from 'zustand'
+import { createStore } from 'zustand/vanilla'
 import { Connector } from 'wagmi'
 
 export interface WalletState {
   address: `0x${string}` | null, // Ethereum address in checksum format
   connector: Connector | null, // The connector used for the wallet connection
   ensName?: string | null, // Optional ENS name associated with the address
-  chainId: number | null, // The current chain ID the wallet is connected to
+  chainId: number | bigint | undefined, // The current chain ID the wallet is connected to
   chainName?: string | null, // Optional name of the current chain
   lastConnectorId: string | null, // ID of the last used connector for auto-reconnect
   setAddress: (address: `0x${string}` | null) => void
   setConnector: (connector: Connector | null) => void
-  setChainId: (chainId: number | null) => void
+  setChainId: (chainId: number | bigint | undefined) => void
   setChainName: (chainName: string | null) => void
   setEnsName: (ensName: string | null) => void
   setLastConnectorId: (id: string) => void
   reset: () => void
 }
 
-export const walletStore = create<WalletState>()((set) => ({
+export const walletStore = createStore<WalletState>()((set) => ({
   lastConnectorId: null,
   address: null,
   connector: null,
-  chainId: null,
+  chainId: undefined,
   chainName: null,
   ensName: null,
   setAddress: (address) => set({ address }),
@@ -31,5 +31,5 @@ export const walletStore = create<WalletState>()((set) => ({
   setChainName: (chainName) => set({ chainName }),
   setEnsName: (ensName) => set({ ensName }),
   setLastConnectorId: (id) => set({ lastConnectorId: id }),
-  reset: () => set({ address: null, connector: null, chainId: null, lastConnectorId: null, ensName: null }),
+  reset: () => set({ address: null, connector: null, chainId: undefined, lastConnectorId: null, ensName: null }),
 }))

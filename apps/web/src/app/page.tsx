@@ -2,6 +2,7 @@
 import {useAccount } from "wagmi";
 import { TokenInfoCard } from "@/features/heng/components/TokenInfoCard";
 import WalletDebugPanel from '@/features/wallet/components/WalletDebugPanel'
+import  {SignInCard} from '@/features/auth/components/SignInCard'
 
 export default function Home() {
   const { address } = useAccount()
@@ -12,12 +13,11 @@ export default function Home() {
    
       <WalletDebugPanel />
       <div className="max-w-2xl mx-auto space-y-8">
-    
-  
-        {address && (
-          <TokenInfoCard address={address} />
-        ) }
+          <TokenInfoCard />
       </div> 
+       <div className="max-w-md mx-auto mt-10">
+      <SignInCard />
+    </div>
     </main>
      
     </div>

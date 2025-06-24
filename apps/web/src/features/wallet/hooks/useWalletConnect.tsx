@@ -23,7 +23,7 @@ export function useWalletConnect() {
     setChainName,
     lastConnectorId,
     reset,
-  } = walletStore()
+  } = walletStore.getState();
 
 
   // 自动连接上次连接器
