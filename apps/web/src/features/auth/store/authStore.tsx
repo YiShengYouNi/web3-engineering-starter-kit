@@ -1,5 +1,6 @@
 // features/auth/store/authStore.ts
 import { createStore } from 'zustand/vanilla'
+// import {create} from 'zustand';
 import { persist } from 'zustand/middleware'
 
 interface AuthState {
@@ -13,19 +14,9 @@ interface AuthState {
   setToken: (token: string) => void
   clearToken: () => void
   reset: () => void
+  //   setLoginSig191: (sig: string, expiry?: number) => void
+  // setLoginSig712: (sig: string, expiry?: number) => void
 }
-
-type AuthPersistedState = Pick<
-  AuthState,
-  | 'loginSig191'
-  | 'loginMessage191'
-  | 'loginTime191'
-  | 'loginSig712'
-  | 'loginMessage712'
-  | 'loginTime712'
-  | 'authToken'
->
-
 type NoMiddleware = [] // 明确告诉 TS 是中间件空列表
 
 export const authStore = createStore<AuthState>()(

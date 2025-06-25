@@ -87,12 +87,12 @@ export const CHAINS: Record<string, ChainConfig> = {
   }
 }
 // 根据网络ID获取网络信息
-export function getChainById(chainId: number): ChainConfig | undefined {
+export function getChainById(chainId: number | bigint): ChainConfig | undefined {
   return Object.values(CHAINS).find((c) => c.id === chainId) || undefined
 }
 
 // 获取指定地址或交易的区块浏览器链接
-export function getExplorerUrl(chainId: number, txOrAddress: string): string {
+export function getExplorerUrl(chainId: number | bigint, txOrAddress: string): string {
   const chain = getChainById(chainId)
   if (!chain) return ''
   const prefix = txOrAddress.length === 42 ? '/address/' : '/tx/'
@@ -100,7 +100,7 @@ export function getExplorerUrl(chainId: number, txOrAddress: string): string {
 }
 
 // 获取某个合约地址（如：heng token 合约）
-export function getAddressByChainIdAndTokenName(chainId: number, tokenName: string): Address {
+export function getAddressByChainIdAndTokenName(chainId: number | bigint, tokenName: string): Address {
   const { contracts } = Object.values(CHAINS).find((c) => c.id === chainId) ?? {}
   return contracts ? contracts[tokenName] ?? null : ZERO_ADDRESS;
 }

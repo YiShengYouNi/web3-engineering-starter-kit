@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { getHengContract } from '@contract/heng'
-import { walletStore } from '@/features/wallet/store/walletStore'
 import { type PublicClient } from 'viem'
+import { useWalletSnapshot } from '@/features/wallet/hooks/useWalletSnapshot'
 
 export function useTotalSupply(publicClient: PublicClient) {
   // 从 wallet store 中获取当前链 ID
-  const chainId = walletStore((s) => s.chainId)
+  const {chainId}  = useWalletSnapshot();
   return useQuery({
     queryKey: ['heng', 'totalSupply', chainId],
     queryFn: async () => {

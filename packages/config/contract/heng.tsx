@@ -3,7 +3,7 @@ import { getContract, type WalletClient, type PublicClient, type GetContractRetu
 import { hengAbi } from '@abi/heng'
 import { getAddressByChainIdAndTokenName } from '@chains'
 
-export function getHengContract(chainId: number, client: PublicClient | WalletClient): GetContractReturnType<typeof hengAbi, PublicClient | WalletClient> {
+export function getHengContract(chainId: number | bigint, client: PublicClient | WalletClient): GetContractReturnType<typeof hengAbi, PublicClient | WalletClient> {
   return getContract({
     abi: hengAbi,
     address: getAddressByChainIdAndTokenName(chainId, 'heng'),
@@ -11,6 +11,6 @@ export function getHengContract(chainId: number, client: PublicClient | WalletCl
   } as const)
 }
 
-export const getHengAddress = (chainId: number): Address => {
+export const getHengAddress = (chainId: number| bigint): Address => {
   return getAddressByChainIdAndTokenName(chainId, 'heng');
 }

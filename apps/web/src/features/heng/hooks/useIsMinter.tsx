@@ -1,14 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { getHengContract } from '@contract/heng'
-import { walletStore } from '@/features/wallet/store/walletStore'
-// import {useWalletSnapshot} from '@/features/wallet/hooks/useWalletSnapshot'
+import {useWalletSnapshot} from '@/features/wallet/hooks/useWalletSnapshot'
 import { type PublicClient } from 'viem'
 
 export function useIsMinter(publicClient: PublicClient) {
-  // 从 wallet store 中获取当前钱包地址和链 ID
-  const address = walletStore((s) => s.address)
-  const chainId = walletStore((s) => s.chainId)
-  // const { address, chainId} = useWalletSnapshot();
+  // 从 wallet store 快照中获取当前地址和链 ID
+  const { address, chainId} = useWalletSnapshot();
 
   return useQuery({
     queryKey: ['heng', 'isMinter', address, chainId],

@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { getHengContract } from '@contract/heng'
-import { walletStore } from '@/features/wallet/store/walletStore'
-import { ChainDoesNotSupportContract, type PublicClient } from 'viem'
+import { type PublicClient } from 'viem'
+import { useWalletSnapshot } from '@/features/wallet/hooks/useWalletSnapshot'
 
 export function useTokenMeta(publicClient: PublicClient) {
-  const chainId = walletStore((s) => s.chainId)
+
+  const { chainId } = useWalletSnapshot()
 
   return useQuery({
     queryKey: ['heng', 'tokenMeta', chainId],
